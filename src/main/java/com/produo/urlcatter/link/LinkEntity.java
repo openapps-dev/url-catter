@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table
+@Table(name = "link")
 public class LinkEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,6 +13,16 @@ public class LinkEntity {
     private String code;
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Date lastUse;
+
+    public LinkEntity() {
+        this.lastUse = new Date();
+    }
+
+    public LinkEntity(String original, String code) {
+        this.lastUse = new Date();
+        this.original = original;
+        this.code = code;
+    }
 
     public Integer getId() {
         return this.id;

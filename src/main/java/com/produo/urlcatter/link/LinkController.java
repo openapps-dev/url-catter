@@ -12,6 +12,7 @@ public class LinkController {
 
     @Autowired
     private LinkRepository repository;
+    private final CodeGenerator codeGenerator = new CodeGenerator();
 
     @GetMapping("/")
     public String index() {
@@ -31,7 +32,7 @@ public class LinkController {
         String link = body.get("link");
         if (link == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("no link value");
-        String code = "todo";
+        String code = codeGenerator.getCode();
         repository.save(new LinkEntity(link, code));
         return ResponseEntity.status(HttpStatus.CREATED).body(code);
     }

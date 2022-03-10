@@ -20,7 +20,10 @@ public class LinkController {
 
     @GetMapping("/{code}")
     public ResponseEntity<String> getLink(@PathVariable("code") String code) {
-        return ResponseEntity.status(HttpStatus.OK).body(code);
+        LinkEntity link = repository.findByCode(code);
+        if (link != null)
+            return ResponseEntity.status(HttpStatus.OK).body(link.getOriginal());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("no link");
     }
 
     @PostMapping("/add")

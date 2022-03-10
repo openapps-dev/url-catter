@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class LinkController {
 
     @Autowired
-    private LinkRepository linkRepository;
+    private LinkRepository repository;
 
     @GetMapping("/")
     public String index() {

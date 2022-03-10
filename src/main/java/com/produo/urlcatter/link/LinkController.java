@@ -27,7 +27,12 @@ public class LinkController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody() HashMap<String, Object> body) {
-        return ResponseEntity.status(HttpStatus.CREATED).body("success");
+    public ResponseEntity<String> addLink(@RequestBody() HashMap<String, String> body) {
+        String link = body.get("link");
+        if (link == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("no link value");
+        String code = "todo";
+        repository.save(new LinkEntity(link, code));
+        return ResponseEntity.status(HttpStatus.CREATED).body(code);
     }
 }

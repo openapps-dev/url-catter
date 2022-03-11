@@ -61,7 +61,7 @@ public class LinkController {
             response.put("error", "This is not a link.");
             return failure(response);
         }
-        String code = codeGenerator.getCode();
+        String code = codeGenerator.generate();
         repository.save(new LinkEntity(link, code));
         response.put("code", code);
         return success(response);

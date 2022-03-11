@@ -9,7 +9,7 @@ public class CodeGenerator {
     private int additionalNum = 1;
     private static final String KEY_CHAIN = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    public String getCode() {
+    public String generate() {
         now = Calendar.getInstance();
         String code = "";
         code += getFromYear();

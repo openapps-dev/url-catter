@@ -6,20 +6,20 @@ Cat ate your url and make it shorter...
 
 ### Create database
 
-```roomsql
+```sql
 CREATE DATABASE 'url_catter';
 ```
 
 ### Create user
 
-```roomsql
+```sql
 CREATE USER 'catter'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON url_catter . * TO 'catter'@'localhost';
 ```
 
 ### Enable events
 
-```roomsql
+```sql
 SET GLOBAL event_scheduler=ON;
 ```
 

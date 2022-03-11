@@ -7,7 +7,7 @@ public class CodeGenerator {
     private Calendar now;
     private String lastCode = "";
     private int additionalNum = 1;
-    private static final String KEY_CHAIN = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static final String KEY_CHAIN = "ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
 
     public String generate() {
         now = Calendar.getInstance();

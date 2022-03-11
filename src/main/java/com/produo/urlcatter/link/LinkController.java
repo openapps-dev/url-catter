@@ -43,10 +43,14 @@ public class LinkController {
         String link = body.get("link");
         if (link == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("no link value");
+
+        LinkEntity entity = repository.findByOriginal(link);
+        if (entity != null)
+            return ResponseEntity.status(HttpStatus.CREATED).body(entity.getCode());
+
         try {
             new URL(link);
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This is not a link");
         }
         String code = codeGenerator.getCode();

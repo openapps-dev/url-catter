@@ -4,24 +4,20 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class CodeGenerator {
+    private Calendar now;
     private String lastCode = "";
     private int additionalNum = 1;
     private static final String KEY_CHAIN = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     public String getCode() {
-        Calendar rightNow = Calendar.getInstance();
+        now = Calendar.getInstance();
         String code = "";
-        String year = String.valueOf(rightNow.get(Calendar.YEAR)).substring(2);
-        int hour = rightNow.get(Calendar.HOUR_OF_DAY);
-        String minutes = String.valueOf(rightNow.get(Calendar.MINUTE));
-        String milliseconds = String.valueOf(rightNow.get(Calendar.MILLISECOND));
-        code += KEY_CHAIN.charAt(Character.getNumericValue(year.charAt(0)));
-        code += KEY_CHAIN.charAt(Character.getNumericValue(year.charAt(1)));
-        code += KEY_CHAIN.charAt(rightNow.get(Calendar.MONTH));
-        code += KEY_CHAIN.charAt(rightNow.get(Calendar.DAY_OF_MONTH));
-        code += KEY_CHAIN.charAt(hour + (int) Math.round(Double.parseDouble(minutes) / 2));
-        code += KEY_CHAIN.charAt(rightNow.get(Calendar.SECOND));
-        code += KEY_CHAIN.charAt((int) Math.round(Double.parseDouble(milliseconds) / 20));
+        code += getFromYear();
+        code += getFromMonth();
+        code += getFromDay();
+        code += getFromHour();
+        code += getFromMinutes();
+        code += getFromMilliseconds();
         if (Objects.equals(lastCode, code)) {
             code += String.valueOf(additionalNum);
             additionalNum++;
@@ -30,5 +26,35 @@ public class CodeGenerator {
         }
         lastCode = code;
         return code;
+    }
+
+    String getFromYear() {
+        String year = String.valueOf(now.get(Calendar.YEAR)).substring(2);
+        return "" +
+            KEY_CHAIN.charAt(Character.getNumericValue(year.charAt(0))) +
+            KEY_CHAIN.charAt(Character.getNumericValue(year.charAt(1)));
+    }
+
+    String getFromMonth() {
+        return String.valueOf(KEY_CHAIN.charAt(now.get(Calendar.MONTH)));
+    }
+
+    String getFromDay() {
+        return String.valueOf(KEY_CHAIN.charAt(now.get(Calendar.DAY_OF_MONTH)));
+    }
+
+    String getFromHour() {
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        String minutes = String.valueOf(now.get(Calendar.MINUTE));
+        return String.valueOf(KEY_CHAIN.charAt(hour + (int) Math.round(Double.parseDouble(minutes) / 2)));
+    }
+
+    String getFromMinutes() {
+        return String.valueOf(KEY_CHAIN.charAt(now.get(Calendar.SECOND)));
+    }
+
+    String getFromMilliseconds() {
+        String milliseconds = String.valueOf(now.get(Calendar.MILLISECOND));
+        return String.valueOf(KEY_CHAIN.charAt((int) Math.round(Double.parseDouble(milliseconds) / 20)));
     }
 }

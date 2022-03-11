@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/link")
@@ -27,6 +28,7 @@ public class LinkController {
     @GetMapping("/{code}")
     public Object getLink(@PathVariable("code") String code) {
         LinkEntity link = repository.findByCode(code);
+        Map<String, Object> response = new HashMap<>();
         if (link != null) {
             int dayTime = 86400000;
             if ((int) (link.getLastUse().getTime() / dayTime) == (int) (new Date().getTime() / dayTime)) {
@@ -35,26 +37,33 @@ public class LinkController {
             }
             return new RedirectView(link.getOriginal());
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("no link");
+        response.put("error", "Such a link do not exist.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addLink(@RequestBody() HashMap<String, String> body) {
+    public ResponseEntity<Object> addLink(@RequestBody() HashMap<String, String> body) {
         String link = body.get("link");
-        if (link == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("no link value");
+        Map<String, Object> response = new HashMap<>();
+        if (link == null) {
+            response.put("error", "No link value.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         LinkEntity entity = repository.findByOriginal(link);
-        if (entity != null)
-            return ResponseEntity.status(HttpStatus.CREATED).body(entity.getCode());
-
+        if (entity != null) {
+            response.put("code", entity.getCode());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
         try {
             new URL(link);
         } catch (MalformedURLException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This is not a link");
+            response.put("error", "This is not a link.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         String code = codeGenerator.getCode();
         repository.save(new LinkEntity(link, code));
-        return ResponseEntity.status(HttpStatus.CREATED).body(code);
+        response.put("code", code);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

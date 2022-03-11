@@ -1,4 +1,4 @@
-package com.produo.urlcatter.link;
+package com.produo.urlcatter.utils;
 
 import java.util.Calendar;
 import java.util.Objects;

@@ -6,7 +6,7 @@ import java.util.Objects;
 public class CodeGenerator {
     private String lastCode = "";
     private int additionalNum = 1;
-    private static final String KEY_CHAIN = "qwertyuiopasdfghjklzxcvbnmQWERTYUOPASDFGHJKLZXCVBNM123456789";
+    private static final String KEY_CHAIN = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     public String getCode() {
         Calendar rightNow = Calendar.getInstance();

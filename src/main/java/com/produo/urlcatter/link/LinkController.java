@@ -1,10 +1,12 @@
 package com.produo.urlcatter.link;
 
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Date;
 import java.util.HashMap;
 
 @RestController
@@ -23,8 +25,14 @@ public class LinkController {
     @GetMapping("/{code}")
     public Object getLink(@PathVariable("code") String code) {
         LinkEntity link = repository.findByCode(code);
-        if (link != null)
+        if (link != null) {
+            int dayTime = 86400000;
+            if ((int) (link.getLastUse().getTime() / dayTime) == (int) (new Date().getTime() / dayTime)) {
+                link.setLastUse(new Date());
+                repository.save(link);
+            }
             return new RedirectView(link.getOriginal());
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("no link");
     }
 

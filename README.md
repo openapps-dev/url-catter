@@ -7,7 +7,7 @@ Cat ate your url and make it shorter...
 ### Create database
 
 ```sql
-CREATE DATABASE 'url_catter';
+CREATE DATABASE url_catter;
 ```
 
 ### Create user

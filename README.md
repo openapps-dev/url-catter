@@ -14,7 +14,7 @@ CREATE DATABASE url_catter;
 
 ```sql
 CREATE USER 'catter'@'localhost' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON url_catter . * TO 'catter'@'localhost';
+GRANT ALL PRIVILEGES ON url_catter.* TO 'catter'@'localhost';
 ```
 
 ### Enable events

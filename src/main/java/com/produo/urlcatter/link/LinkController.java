@@ -38,7 +38,7 @@ public class LinkController {
             return new RedirectView(link.getOriginal());
         }
         response.put("error", "Such a link do not exist.");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return failure(response);
     }
 
     @PostMapping("/add")
@@ -47,23 +47,31 @@ public class LinkController {
         Map<String, Object> response = new HashMap<>();
         if (link == null) {
             response.put("error", "No link value.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            return failure(response);
         }
 
         LinkEntity entity = repository.findByOriginal(link);
         if (entity != null) {
             response.put("code", entity.getCode());
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return success(response);
         }
         try {
             new URL(link);
         } catch (MalformedURLException e) {
             response.put("error", "This is not a link.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            return failure(response);
         }
         String code = codeGenerator.getCode();
         repository.save(new LinkEntity(link, code));
         response.put("code", code);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return success(response);
+    }
+
+    ResponseEntity<Object> success(Object obj) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(obj);
+    }
+
+    ResponseEntity<Object> failure(Object obj) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obj);
     }
 }

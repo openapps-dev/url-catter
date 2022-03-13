@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/link")
@@ -28,8 +29,15 @@ public class LinkController {
 
     @GetMapping("/{code}")
     public Object getLink(@PathVariable("code") String code) {
-        LinkEntity link = repository.findByCode(code);
         Map<String, Object> response = new HashMap<>();
+
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]{4,9}");
+        if (!pattern.matcher(code).matches()) {
+            response.put("error", "Invalid code");
+            return failure(response);
+        }
+
+        LinkEntity link = repository.findByCode(code);
         if (link != null) {
             int dayTime = 86400000;
             if ((int) (link.getLastUse().getTime() / dayTime) == (int) (new Date().getTime() / dayTime)) {
@@ -38,6 +46,7 @@ public class LinkController {
             }
             return new RedirectView(link.getOriginal());
         }
+        
         response.put("error", "Such a link do not exist.");
         return failure(response);
     }

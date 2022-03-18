@@ -27,6 +27,8 @@ public class LinkController {
         return "/{code}\n/add";
     }
 
+
+
     @GetMapping("/{code}")
     public Object getLink(@PathVariable("code") String code) {
         Map<String, Object> response = new HashMap<>();
@@ -66,6 +68,10 @@ public class LinkController {
             return success(response);
         }
         try {
+            if (link.length() > 512) {
+                response.put("error", "Max link length exceeded");
+                return failure(response);
+            }
             new URL(link);
         } catch (MalformedURLException e) {
             response.put("error", "This is not a link.");

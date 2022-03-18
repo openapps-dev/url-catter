@@ -1,5 +1,7 @@
 package com.produo.urlcatter.link;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -9,6 +11,8 @@ public class LinkEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @Lob
+    @Column
     private String original;
     private String code;
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,6 +1,9 @@
 package com.produo.urlcatter.link;
 
 import com.produo.urlcatter.utils.CodeGenerator;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +21,10 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/link")
 public class LinkController {
+    public LinkController() {
+        Bandwidth limit = Bandwidth.classic(10, Refill.greedy(10, Duration.ofMinutes(1)));
+        this.bucket = Bucket.builder().addLimit(limit).build();
+    }
 
     @Autowired
     private LinkRepository repository;
@@ -27,7 +35,7 @@ public class LinkController {
         return "/{code}\n/add";
     }
 
-
+    private final Bucket bucket;
 
     @GetMapping("/{code}")
     public Object getLink(@PathVariable("code") String code) {
@@ -57,6 +65,12 @@ public class LinkController {
     public ResponseEntity<Object> addLink(@RequestBody() HashMap<String, String> body) {
         String link = body.get("link");
         Map<String, Object> response = new HashMap<>();
+
+        if (!bucket.tryConsume(1)) {
+            response.put("error", "You are rate-limited");
+            return failure(response, 429);
+        }
+
         if (link == null) {
             response.put("error", "No link value.");
             return failure(response);
@@ -89,5 +103,9 @@ public class LinkController {
 
     ResponseEntity<Object> failure(Object obj) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obj);
+    }
+
+    ResponseEntity<Object> failure(Object obj, int code) {
+        return ResponseEntity.status(code).body(obj);
     }
 }
